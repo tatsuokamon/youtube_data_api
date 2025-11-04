@@ -49,7 +49,7 @@ func (s Snippet) String() string {
 
 		-- ChanneldID:		%s
 		-- ChanneldTitle:	%s
-	`, s.Title, s.ChannelID, s.ChannelTitle, s.Description)
+	`, s.Title, s.Description, s.ChannelID, s.ChannelTitle)
 	for t := range s.ThumbnailsIter {
 		result += t.String()
 	}

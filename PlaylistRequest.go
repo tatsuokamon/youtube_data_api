@@ -19,6 +19,10 @@ type PlaylistRequest struct {
 	Part       string `json:"part"`
 }
 
+func (r * PlaylistRequest)SetKey(key string){
+	r.Key = key
+}
+
 func (r *PlaylistRequest) ToURL() (string, error) {
 	urlPrefix := "https://www.googleapis.com/youtube/v3/playlistItems"
 	v := url.Values{}
@@ -33,9 +37,7 @@ func (r *PlaylistRequest) ToURL() (string, error) {
 	}
 	v.Add("playlistId", r.PlaylistID)
 
-	if r.Part != PartTypeSnippet {
-		v.Add("part", r.Part)
-	}
+	v.Add("part", r.Part)
 
 	return fmt.Sprintf("%s?%s", urlPrefix, v.Encode()), nil
 }

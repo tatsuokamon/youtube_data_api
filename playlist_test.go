@@ -7,18 +7,13 @@ import (
 	"testing"
 )
 
-func TestSearch(t *testing.T) {
+func TestPlaylist(t *testing.T) {
 	key := getKey()
 
-	// SearchRequest
-	sr := NewSearchRequest()
-	sr.SetKey(key)
-	sr.Query = "もこう"
-	sr.MaxResults = 5
-	sr.Part = PartTypeSnippet
-	sr.Type = YoutubeTypePlaylist
-
-	u, err := sr.ToURL()
+	pr := NewPlaylistRequest()
+	pr.SetKey(key)
+	pr.PlaylistID = "PLloSdCaKLbA9X-RsTt3MFA4jDxyB0AGAD"
+	u, err := pr.ToURL()
 	if err != nil {
 		t.Log(err)
 	}
@@ -29,17 +24,17 @@ func TestSearch(t *testing.T) {
 		t.Log(err)
 	}
 	defer resp.Body.Close()
+
 	content, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Log(err)
 	}
-	// t.Log(string(content))
+	t.Log(string(content))
 
 	var res Response
 	err = json.Unmarshal(content, &res)
 	if err != nil {
 		t.Log(err)
 	}
-
 	t.Log(res)
 }

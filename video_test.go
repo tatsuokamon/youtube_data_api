@@ -7,18 +7,17 @@ import (
 	"testing"
 )
 
-func TestSearch(t *testing.T) {
+func TestVideo(t *testing.T) {
 	key := getKey()
+	vr := NewVideoRequest()
+	vr.SetKey(key)
+	vr.AddID("XlRyUkvF8RM") // マーモットの動画
+	vr.AddID("Iy1MdbgZWrs") // スカタンクの動画
+	vr.AddID("QI76ErPwO_I") // ゼルダの動画
 
-	// SearchRequest
-	sr := NewSearchRequest()
-	sr.SetKey(key)
-	sr.Query = "もこう"
-	sr.MaxResults = 5
-	sr.Part = PartTypeSnippet
-	sr.Type = YoutubeTypePlaylist
+	vr.DeleteID("Iy1MdbgZWrs") // IDの削除(表示されるのはまーもっととゼルダなはず)
 
-	u, err := sr.ToURL()
+	u, err := vr.ToURL()
 	if err != nil {
 		t.Log(err)
 	}
@@ -33,13 +32,11 @@ func TestSearch(t *testing.T) {
 	if err != nil {
 		t.Log(err)
 	}
-	// t.Log(string(content))
-
+	t.Log(string(content))
 	var res Response
 	err = json.Unmarshal(content, &res)
 	if err != nil {
 		t.Log(err)
 	}
-
 	t.Log(res)
 }
