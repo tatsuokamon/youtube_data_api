@@ -2,26 +2,55 @@ package youtubedataapi
 
 import "fmt"
 
-type Item struct {
-	Etag string `json:"etag"`
-	ID struct {
-		Kind string `json:"kind"`
-		VideoID string `json:"videoId"`
-		ChannelID string `json:"channelId"`
-		PlaylistID string `json:"playlistId"`
-	} `json:"id"`
+type ID struct {
+	Kind       string `json:"kind"`
+	VideoID    string `json:"videoId"`
+	ChannelID  string `json:"channelId"`
+	PlaylistID string `json:"playlistId"`
+}
+
+func (id ID) String() string {
+	result := fmt.Sprintf(`\tKind: %s\n`, id.Kind)
+
+	for field, i := range map[string]string{
+		"VideoID":    id.VideoID,
+		"ChannelID":  id.ChannelID,
+		"PlaylistID": id.PlaylistID,
+	} {
+		result += fmt.Sprintf(`\t%s: %s`, field, i)
+	}
+
+	return result
+}
+
+type Item interface {
+	GetEtag() string
+	GetSnippet() Snippet
+
+	GetID() ID // 各Itemで追加
+}
+
+type Items []Item
+
+type ItemBase struct {
+	Etag    string  `json:"etag"`
 	Snippet Snippet `json:"snippet"`
 }
 
-func (i Item) String() string{
+func (i ItemBase) GetEtag() string {
+	return i.Etag
+}
+
+func (i ItemBase) GetSnippet() Snippet {
+	return i.Snippet
+}
+
+func ItemStringBase(i Item) string {
 	return fmt.Sprintf(
-	`
+		`
 	--------------------
-	Kind: %s
-	VideoID: %s
-	ChannelID: %s
-	PlaylistID: %s
-	Snippet: %s
+%s
+\tSnippet: %s
 	--------------------
-		 `,i.ID.Kind, i.ID.VideoID, i.ID.ChannelID, i.ID.PlaylistID, i.Snippet.String())
+		 `, i.GetID().String(), i.GetSnippet().String())
 }

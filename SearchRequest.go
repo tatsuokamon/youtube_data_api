@@ -1,39 +1,37 @@
 package youtubedataapi
 
 import (
-	"fmt"
 	"net/url"
 	"strconv"
 )
 
 const (
-	NoSpecify string = ""
-	YoutubeTypeVideo string = "video"
+	NoSpecify           string = ""
+	YoutubeTypeVideo    string = "video"
 	YoutubeTypePlaylist string = "playlist"
-	YoutubeTypeChannel string = "channel"
+	YoutubeTypeChannel  string = "channel"
 )
 
 func NewSearchRequest() *SearchRequest {
 	return &SearchRequest{
-		Part: PartTypeSnippet,
-		MaxResults: 50,
+		RequestBase: RequestBase{
+			Part: PartTypeSnippet,
+		},
+		Type: NoSpecify,
 	}
 }
 
 type SearchRequest struct {
-	Key string `json:"key"`
-	Part   string `json:"part"`
-	Query  string `json:"query"`
-	Type    string `json:"type"`
-	MaxResults int `json:"maxResults"`
+	RequestBase
+	Type  string `json:"type"`
+	Query string `json:"query"`
 }
 
-func (r *SearchRequest) SetKey(key string) {
-	r.Key = key
+func (r *SearchRequest)responseType() Response{
+	return SearchResponse{}
 }
 
-func (r *SearchRequest) ToURL() (string, error) {
-	urlPrefix := "https://www.googleapis.com/youtube/v3/search"
+func (r *SearchRequest) EncodedQuery() (string, error) {
 	v := url.Values{}
 
 	if r.Key == "" {
@@ -57,5 +55,9 @@ func (r *SearchRequest) ToURL() (string, error) {
 		v.Add("maxResults", strconv.Itoa(r.MaxResults))
 	}
 
-	return fmt.Sprintf("%s?%s", urlPrefix, v.Encode()), nil
+	return v.Encode(), nil
+}
+
+func (r *SearchRequest) ToURL() (string, error) {
+	return ToURLBase("https://www.googleapis.com/youtube/v3/search", r)
 }

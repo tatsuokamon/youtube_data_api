@@ -3,35 +3,39 @@ package youtubedataapi
 import "fmt"
 
 type Snippet struct {
-	ChannelID            string `json:"channelId"`
-	ChannelTitle         string `json:"channelTitle"`
-	Description          string `json:"description"`
-	LiveBroadcastContent string `json:"liveBroadcastContent"`
-	PublishTime          string `json:"publishTime"`
-	PublishedAt          string `json:"publishedAt"`
-	Thumbnails           struct {
-		Default Thumbnail `json:"default"`
-		High    Thumbnail `json:"high"`
-		Medium  Thumbnail `json:"medium"`
-	} `json:"thumbnails"`
+	ChannelID            string     `json:"channelId"`
+	ChannelTitle         string     `json:"channelTitle"`
 
+	Description          string     `json:"description"`
+	LiveBroadcastContent string     `json:"liveBroadcastContent"`
+	PublishTime          string     `json:"publishTime"`
+	PublishedAt          string     `json:"publishedAt"`
+
+	Thumbnails           Thumbnails `json:"thumbnails"`
+	ResourceID ID `json:"resourceId"`
 	Title string `json:"title"`
 }
 
-func (s Snippet) ThumbnailsIter(yield func(Thumbnail) bool) {
-	if s.Thumbnails.Default.URL != "" {
-		if !(yield(s.Thumbnails.Default)) {
-			return
-		}
-	}
-	if s.Thumbnails.High.URL != "" {
-		if !(yield(s.Thumbnails.Default)) {
-			return
-		}
-	}
-	if s.Thumbnails.Medium.URL != "" {
-		if !(yield(s.Thumbnails.Default)) {
-			return
+type Thumbnails struct {
+	Default  Thumbnail `json:"default"`
+	High     Thumbnail `json:"high"`
+	Medium   Thumbnail `json:"medium"`
+	Standard Thumbnail `json:"standard"`
+	Maxres   Thumbnail `json:"maxres"`
+}
+
+func (ts Thumbnails) Iter(yield func(Thumbnail) bool) {
+	for _, t := range []Thumbnail{
+		ts.Default,
+		ts.High,
+		ts.Medium,
+		ts.Standard,
+		ts.Maxres,
+	} {
+		if t.URL != "" {
+			if !yield(t) {
+				return
+			}
 		}
 	}
 }
@@ -50,7 +54,7 @@ func (s Snippet) String() string {
 		-- ChanneldID:		%s
 		-- ChanneldTitle:	%s
 	`, s.Title, s.Description, s.ChannelID, s.ChannelTitle)
-	for t := range s.ThumbnailsIter {
+	for t := range s.Thumbnails.Iter {
 		result += t.String()
 	}
 

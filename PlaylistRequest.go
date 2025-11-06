@@ -1,30 +1,26 @@
 package youtubedataapi
 
 import (
-	"fmt"
 	"net/url"
 )
 
 func NewPlaylistRequest() *PlaylistRequest {
 	return &PlaylistRequest{
-		Part: PartTypeSnippet,
-		PlaylistID: "",
+		RequestBase: RequestBase{Part: PartTypeSnippet},
+		PlaylistID:  "",
 	}
 }
 
 type PlaylistRequest struct {
-	Key string `json:"key"`
-
+	RequestBase
 	PlaylistID string `json:"playlistId"`
-	Part       string `json:"part"`
 }
 
-func (r * PlaylistRequest)SetKey(key string){
-	r.Key = key
+func (r *PlaylistRequest) responseType() Response{
+	return PlaylistResponse{}
 }
 
-func (r *PlaylistRequest) ToURL() (string, error) {
-	urlPrefix := "https://www.googleapis.com/youtube/v3/playlistItems"
+func (r *PlaylistRequest) EncodedQuery() (string, error) {
 	v := url.Values{}
 
 	if r.Key == "" {
@@ -38,6 +34,9 @@ func (r *PlaylistRequest) ToURL() (string, error) {
 	v.Add("playlistId", r.PlaylistID)
 
 	v.Add("part", r.Part)
+	return v.Encode(), nil
+}
 
-	return fmt.Sprintf("%s?%s", urlPrefix, v.Encode()), nil
+func (r *PlaylistRequest) ToURL() (string, error) {
+	return ToURLBase("https://www.googleapis.com/youtube/v3/playlistItems", r)
 }

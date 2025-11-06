@@ -10,4 +10,6 @@ var (
 	ErrUndefinedPlaylistID error = errors.New("")
 
 	ErrUndefinedVideoID error = errors.New("")
+
+	ErrNotFoundNextPageToken error = errors.New("")
 )
