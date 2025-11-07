@@ -7,7 +7,6 @@ type Request interface {
 	SetKey(string)
 	SetNextPageToken(string)
 	EncodedQuery() (string, error)
-	responseType()Response
 }
 
 type RequestBase struct {

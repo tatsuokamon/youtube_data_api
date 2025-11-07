@@ -18,7 +18,7 @@ type VideoRequest struct {
 	idList []string
 }
 
-func (r *VideoRequest) responseType() Response{
+func (r *VideoRequest) ResponseType() VideoResponse{
 	return VideoResponse{}
 }
 

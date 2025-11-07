@@ -16,7 +16,7 @@ type PlaylistRequest struct {
 	PlaylistID string `json:"playlistId"`
 }
 
-func (r *PlaylistRequest) responseType() Response{
+func (r *PlaylistRequest) ResponseType() PlaylistResponse{
 	return PlaylistResponse{}
 }
 

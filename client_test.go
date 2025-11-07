@@ -4,12 +4,17 @@ import "testing"
 
 func TestClient(t *testing.T) {
 	c := NewClient()
-	for r := range readyRequest {
-		res, err := c.Get(r)
-		if err != nil {
-			t.Log(err)
-		}
 
-		t.Log(res)
+	key := getKey()
+	sr := NewSearchRequest()
+	sr.SetKey(key)
+	sr.Query = "mokou"
+
+	res := sr.responseType()
+	err := c.Get(sr, &res)
+	if err != nil {
+		t.Log(err)
 	}
+
+	t.Log(res)
 }

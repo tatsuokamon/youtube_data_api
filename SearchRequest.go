@@ -27,7 +27,7 @@ type SearchRequest struct {
 	Query string `json:"query"`
 }
 
-func (r *SearchRequest)responseType() Response{
+func (r *SearchRequest)ResponseType() SearchResponse{
 	return SearchResponse{}
 }
 

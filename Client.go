@@ -2,7 +2,6 @@ package youtubedataapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 )
@@ -17,29 +16,28 @@ type Client struct {
 	client *http.Client
 }
 
-func (c *Client) Get(req Request) (Response, error) {
+func (c *Client) Get(req Request, st any) (error) {
 	u, err := req.ToURL()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	resp, err := c.client.Get(u)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer resp.Body.Close()
 
 	content, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	result := req.responseType()
-	err = json.Unmarshal(content, &result)
+	err = json.Unmarshal(content, st)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 
 }
